@@ -6,9 +6,9 @@ use App\BlogEngine\Command\CommentHandler;
 use App\BlogEngine\Command\CreatePostHandler;
 use App\BlogEngine\Command\PublishPostHandler;
 use App\BlogEngine\Command\UpdatePostHandler;
-use App\BlogEngine\Query\AllPostsQueryHandler;
-use App\BlogEngine\Query\PostQueryHandler;
-use App\Repository\PostRepository;
+use App\BlogEngine\Infrastructure\Persistence\EventStore\PostRepository;
+
+// use App\Repository\PostRepository;
 
 /**
  * Class CommandBusFactory

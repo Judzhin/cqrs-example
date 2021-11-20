@@ -13,7 +13,7 @@ use Buttercup\Protects\RecordsEvents;
  * Class Post
  * @package App\BlogEngine\DomainModel
  */
-class Post implements RecordsEvents, IsEventSourced
+class Post implements RecordsEvents //, IsEventSourced
 {
     const STATE_DRAFT = 10;
     const STATE_PUBLISHED = 20;
@@ -57,6 +57,7 @@ class Post implements RecordsEvents, IsEventSourced
     public function getRecordedEvents(): DomainEvents
     {
         return new DomainEvents($this->recordedEvents);
+        // return $this->recordedEvents;
     }
 
     /**

@@ -4,12 +4,9 @@
 namespace App\BlogEngine\Infrastructure\Persistence\EventStore;
 
 use App\BlogEngine\Infrastructure\Projection\PDO\PostProjection;
-use Buttercup\Protects\DomainEvents;
 use Buttercup\Protects\IdentifiesAggregate;
 use Buttercup\Protects\IsEventSourced;
 use Buttercup\Protects\RecordsEvents;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * Class PDOEventStore
@@ -24,7 +21,10 @@ class PostRepository implements \App\BlogEngine\DomainModel\PostRepository
      * @param PDOEventStore $eventStore
      * @param PostProjection $postProjection
      */
-    public function __construct(private PDOEventStore $eventStore, PostProjection $postProjection)
+    public function __construct(
+        private PDOEventStore $eventStore,
+        private PostProjection $postProjection
+    )
     {}
 
     /**

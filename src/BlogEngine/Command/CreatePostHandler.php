@@ -2,11 +2,14 @@
 
 namespace App\BlogEngine\Command;
 
+use App\BlogEngine\DomainModel\Post;
+use App\BlogEngine\DomainModel\PostId;
 use App\BlogEngine\Infrastructure\Persistence\EventStore\PostRepository;
 
 /**
  * Class CreatePostHandler
  * @package App\BlogEngine\Command
+ * @todo rename PostEventStore
  */
 class CreatePostHandler
 {
@@ -31,6 +34,6 @@ class CreatePostHandler
             $aCreatePostCommand->getContent()
         );
 
-        $this->postRepository->add($aNewPost);
+        $this->repository->add($aNewPost);
     }
 }
