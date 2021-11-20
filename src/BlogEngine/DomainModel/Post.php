@@ -1,19 +1,18 @@
 <?php
 
-
 namespace App\BlogEngine\DomainModel;
-
 
 use Buttercup\Protects\DomainEvent;
 use Buttercup\Protects\DomainEvents;
 use Buttercup\Protects\IsEventSourced;
 use Buttercup\Protects\RecordsEvents;
+use Verraes\ClassFunctions\ClassFunctions;
 
 /**
  * Class Post
  * @package App\BlogEngine\DomainModel
  */
-class Post implements RecordsEvents //, IsEventSourced
+class Post implements RecordsEvents, IsEventSourced
 {
     const STATE_DRAFT = 10;
     const STATE_PUBLISHED = 20;
@@ -37,7 +36,8 @@ class Post implements RecordsEvents //, IsEventSourced
         string $content,
         int $state = self::STATE_DRAFT,
         array $comments = [])
-    {}
+    {
+    }
 
     /**
      * @param $aPostId
@@ -84,27 +84,30 @@ class Post implements RecordsEvents //, IsEventSourced
         return $aNewPost;
     }
 
-    public function publish()
-    {
-        $this->applyAndRecordThat(
-            new PostWasPublished($this->postId)
-        );
-    }
+//    public function publish()
+//    {
+//        $this->applyAndRecordThat(
+//            new PostWasPublished($this->postId)
+//        );
+//    }
+//
+//    public function changeTitle($aNewTitle)
+//    {
+//        $this->applyAndRecordThat(
+//            new PostTitleWasChanged($this->postId, $aNewTitle)
+//        );
+//    }
+//
+//    public function changeContent($aNewContent)
+//    {
+//        $this->applyAndRecordThat(
+//            new PostContentWasChanged($this->postId, $aNewContent)
+//        );
+//    }
 
-    public function changeTitle($aNewTitle)
-    {
-        $this->applyAndRecordThat(
-            new PostTitleWasChanged($this->postId, $aNewTitle)
-        );
-    }
-
-    public function changeContent($aNewContent)
-    {
-        $this->applyAndRecordThat(
-            new PostContentWasChanged($this->postId, $aNewContent)
-        );
-    }
-
+    /**
+     * @param $aNewComment
+     */
     public function comment($aNewComment)
     {
         $this->applyAndRecordThat(
@@ -144,6 +147,9 @@ class Post implements RecordsEvents //, IsEventSourced
         return $aPost;
     }
 
+    /**
+     * @param $anEvent
+     */
     private function apply($anEvent)
     {
         $method = 'apply' . ClassFunctions::short($anEvent);
@@ -156,20 +162,20 @@ class Post implements RecordsEvents //, IsEventSourced
         $this->content = $event->getContent();
     }
 
-    private function applyPostWasPublished(PostWasPublished $event)
-    {
-        $this->state = static::STATE_PUBLISHED;
-    }
-
-    private function applyPostTitleWasChanged(PostTitleWasChanged $event)
-    {
-        $this->title = $event->getTitle();
-    }
-
-    private function applyPostContentWasChanged(PostContentWasChanged $event)
-    {
-        $this->content = $event->getContent();
-    }
+//    private function applyPostWasPublished(PostWasPublished $event)
+//    {
+//        $this->state = static::STATE_PUBLISHED;
+//    }
+//
+//    private function applyPostTitleWasChanged(PostTitleWasChanged $event)
+//    {
+//        $this->title = $event->getTitle();
+//    }
+//
+//    private function applyPostContentWasChanged(PostContentWasChanged $event)
+//    {
+//        $this->content = $event->getContent();
+//    }
 
     private function applyCommentWasAdded(CommentWasAdded $event)
     {

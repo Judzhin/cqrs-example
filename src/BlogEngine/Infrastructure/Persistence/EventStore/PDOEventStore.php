@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\BlogEngine\Infrastructure\Persistence\EventStore;
 
 use Buttercup\Protects\DomainEvents;
@@ -17,6 +16,7 @@ class PDOEventStore implements EventStore
 {
     /**
      * DoctrineEventStore constructor.
+     *
      * @param EntityManagerInterface $entityManager
      * @param SerializerInterface $serializer
      */

@@ -37,4 +37,5 @@ class PostProjection extends BaseProjection
         $this->entityManager->persist($entity);
         $this->entityManager->flush();
     }
+
 }
