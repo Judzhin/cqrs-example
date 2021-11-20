@@ -1,0 +1,14 @@
+version: '3.5'
+
+services:
+###> symfony/mailer ###
+  mailer:
+    image: schickling/mailcatcher
+    ports: [1025, 1080]
+###< symfony/mailer ###
+
+###> doctrine/doctrine-bundle ###
+  mariadb:
+    ports:
+      - 9033
+###< doctrine/doctrine-bundle ###

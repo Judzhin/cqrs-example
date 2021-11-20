@@ -1,0 +1,109 @@
+version: '3.5'
+
+services:
+
+  php-fpm:
+    container_name: cqrs-php-fpm-${APP_ENV:-dev}
+    build:
+      context: .
+      target: ${APP_ENV:-dev}
+      dockerfile: .docker/php-fpm/Dockerfile
+      args:
+        APP_ENV: ${APP_ENV:-dev}
+        TZ: ${TZ:-Europe/Kiev}
+    volumes:
+      - ./:/var/www/html:rw
+      - ~/.composer:/root/.composer/cache
+    networks:
+      - cqrs
+
+  nginx:
+    container_name: cqrs-nginx-${APP_ENV:-dev}
+    build:
+      context: .
+      target: ${APP_ENV:-dev}
+      dockerfile: .docker/nginx/Dockerfile
+      args:
+        APP_ENV: ${APP_ENV:-dev}
+    volumes:
+      - ./:/var/www/html:rw
+      - ./var/log/nginx:/var/log/nginx:rw
+    ports:
+      - ${NGINX_PORT:-8080}:80
+    depends_on:
+      - php-fpm
+    networks:
+      - cqrs
+
+###> doctrine/doctrine-bundle ###
+  mariadb:
+    container_name: cqrs-mariadb-${APP_ENV:-dev}
+    build:
+      context: .
+      target: ${APP_ENV:-dev}
+      dockerfile: .docker/mariadb/Dockerfile
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-cqrs.dev}
+      MYSQL_USER: ${MYSQL_USER:-root}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-root}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+    ports:
+      - ${MYSQL_PORT:-9033}:3306
+    volumes:
+      - cqrs-data:/var/lib/mysql:rw
+    networks:
+      - cqrs
+###> doctrine/doctrine-bundle ###
+
+  pma:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: cqrs-pma-${APP_ENV:-dev}
+    ports:
+      - ${PMA_PORT:-33080}:80
+    environment:
+      PMA_HOST: ${PMA_HOST:-mariadb}
+    depends_on:
+      - mariadb
+    networks:
+      - cqrs
+
+  memcached:
+    container_name: cqrs-memcached-${APP_ENV:-dev}
+    image: memcached:latest
+    networks:
+      - cqrs
+
+  rabbitmq:
+    container_name: cqrs-rabbit-${APP_ENV:-dev}
+    image: rabbitmq:3-management-alpine
+    environment:
+      RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE:-SWQOKODSQALRPCLNMEQG}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-rabbit}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-rabbit}
+    ports:
+      - ${RABBITMQ_DASHBOARD_PORT:-1919}:15672 # dashboard
+      - ${RABBITMQ_PORT:-5672}:5672
+#    volumes:
+#      - .docker/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins
+    depends_on:
+      - nginx
+    networks:
+      - cqrs
+
+  mailer:
+    image: mailhog/mailhog
+    container_name: cqrs-mailer-${APP_ENV:-dev}
+    ports:
+      - ${MAILHOG_PORT:-8025}:8025
+    networks:
+      - cqrs
+
+networks:
+  cqrs:
+    driver: bridge
+
+volumes:
+###> doctrine/doctrine-bundle ###
+  cqrs-data:
+    driver: local
+###< doctrine/doctrine-bundle ###

@@ -1,0 +1,14 @@
+{% extends "layout.html.twig" %}
+
+{% block title 'List of blog posts' %}
+
+{% block content %}
+<div class="page-header">
+    <h1>List of posts</h1>
+</div>
+<ul>
+    {% for post in posts %}
+    <li><a href="{{ path('post', {'id': post.id}) }}">{{ post.title }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

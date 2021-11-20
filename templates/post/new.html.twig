@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+{% block title 'Create a new blog post' %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Write a new blog post</h1>
+    </div>
+    {{ form(form, {'action': path('create_post'), 'method': 'POST', 'style': 'horizontal'}) }}
+{% endblock %}
